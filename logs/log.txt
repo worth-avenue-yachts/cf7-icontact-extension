@@ -1,0 +1,2 @@
+[06/03/2017 4:47 PM] - -------- Log File Reset --------
+[06/03/2017 4:58 PM] - STATUS : Contact Form 7 response: Mail sent OK | iContact.com response: {"subscriptions":[{"addDate":"2017-06-03T12:58:15-04:00","contactId":"2450238","listId":"4908","status":"normal","subscriptionId":"4908_2450238"}]}
