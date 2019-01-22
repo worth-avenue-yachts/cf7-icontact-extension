@@ -300,8 +300,8 @@ function wpcf7_vcic_subscribe($obj) { //Metodo wp_remote
         $ListArr = json_decode($ListArr["body"], True);
 
 
-        $ListArr = array_column($ListArr['lists'], 'listId','name');
-	   // $ListArr = array_column($ListArr['lists'], 'listId','listId');
+       // $ListArr = array_column($ListArr['lists'], 'listId','name');
+	    $ListArr = array_column($ListArr['lists'], 'listId','listId');
 
 
         $cadMergeVar=',';
