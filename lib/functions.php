@@ -219,6 +219,7 @@ function wpcf7_vcic_subscribe($obj) { //Metodo wp_remote
     $callback = array( &$obj, 'cf7_vcic_callback' );
 
     $email = cf7_vcic_tag_replace( $regex, $cf7_vcic['email'], $submission->get_posted_data() );
+
     $name = cf7_vcic_tag_replace( $regex, $cf7_vcic['name'], $submission->get_posted_data() );
 
     $lists = cf7_vcic_tag_replace( $regex, $cf7_vcic['list'], $submission->get_posted_data() );
@@ -274,7 +275,7 @@ function wpcf7_vcic_subscribe($obj) { //Metodo wp_remote
                             "Api-Password" => $apipwd ) ;
 
 
-        $api_urlAccounts = 'https://app.icontact.com/icp/a/';
+        $api_urlAccounts = 'https://api.icpro.co/icp/a/';
 
         $opts = array(
                 // 'method' => 'POST',
@@ -287,18 +288,21 @@ function wpcf7_vcic_subscribe($obj) { //Metodo wp_remote
         $Accounts = json_decode($Accounts["body"], True);
         $AccountId = $Accounts['accounts'][0]['accountId'] ; //por defecto estoy obteniendo la primera cuenta
 
-        $api_urlFolder = 'https://app.icontact.com/icp/a/'.$AccountId."/c";
+        $api_urlFolder = 'https://api.icpro.co/icp/a/'.$AccountId."/c";
 
         $Folders = wp_remote_request( $api_urlFolder, $opts ); // con esto conecto
         $Folders = json_decode($Folders["body"], True);
 
         $FoldersId = $Folders['clientfolders'][0]['clientFolderId'] ;
 
-        $api_urlList = 'https://app.icontact.com/icp/a/'.$AccountId.'/c/'.$FoldersId.'/'.'lists' ;
+        $api_urlList = 'https://api.icpro.co/icp/a/'.$AccountId.'/c/'.$FoldersId.'/'.'lists' ;
         $ListArr = wp_remote_request( $api_urlList, $opts );
         $ListArr = json_decode($ListArr["body"], True);
 
+
         $ListArr = array_column($ListArr['lists'], 'listId','name');
+	   // $ListArr = array_column($ListArr['lists'], 'listId','listId');
+
 
         $cadMergeVar=',';
         $cadarray = array();
@@ -317,7 +321,12 @@ function wpcf7_vcic_subscribe($obj) { //Metodo wp_remote
 
         //$cadarray = json_encode ($cadarray) ; //Transforma el array en json
 
-        $listId  = $ListArr[$lists]  ;
+	      if (array_key_exists($lists, $ListArr)) {
+		      $listId  = $ListArr[$lists];
+	      } else {
+		      $listId  = $lists;
+	      }
+
 
         $body = '[
           {
@@ -326,7 +335,7 @@ function wpcf7_vcic_subscribe($obj) { //Metodo wp_remote
             "status":"normal"' . $cadMergeVar . '
           } ]';
 
-        $api_urlContacts = 'https://app.icontact.com/icp/a/'.$AccountId.'/c/'.$FoldersId.'/'.'contacts/'    ;
+        $api_urlContacts = 'https://api.icpro.co/icp/a/'.$AccountId.'/c/'.$FoldersId.'/'.'contacts/'    ;
 
         $opts = array(
                 'method' => 'POST',
@@ -336,12 +345,11 @@ function wpcf7_vcic_subscribe($obj) { //Metodo wp_remote
                     );
 
         $getContact = wp_remote_post( $api_urlContacts, $opts ); // con esto conecto
-
         $getContact = json_decode($getContact["body"], True);
 
         $ContactId = $getContact['contacts'][0]['contactId'] ;
 
-        $api_urlSubscripLista = 'https://app.icontact.com/icp/a/'.$AccountId.'/c/'.$FoldersId.'/'.'subscriptions/';
+        $api_urlSubscripLista = 'https://api.icpro.co/icp/a/'.$AccountId.'/c/'.$FoldersId.'/'.'subscriptions/';
 
         //var_dump('$ContactId: ' . $ContactId );
 
