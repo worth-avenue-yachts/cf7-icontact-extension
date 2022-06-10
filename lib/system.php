@@ -89,7 +89,7 @@
   // Must-use plugins
   // NOTE: MU plugins can't show updates!
   $muplugins = get_mu_plugins();
-  if( count( $muplugins > 0 ) ) {
+  if( is_array( $muplugins ) && count( $muplugins > 0 ) ) {
     $return .= "\n" . '== Must-Use Plugins' . "\n";
     $return .= '================================================' . "\n";
     foreach( $muplugins as $plugin => $plugin_data ) {
